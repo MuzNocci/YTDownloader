@@ -1,4 +1,4 @@
-import os
+import os, re
 from pytubefix import YouTube
 
 
@@ -11,6 +11,10 @@ class ytDownloader:
 
     def downloader(self, url):
 
+        if not self.is_valid_youtube_url(url):
+            print("Invalid YouTube URL.")
+            return None
+
         yt = YouTube(url)
         stream = yt.streams.get_highest_resolution()
 
@@ -18,7 +22,7 @@ class ytDownloader:
             downloads_path = os.path.join(BASE_DIR, 'downloads')
             if not os.path.exists(downloads_path):
                 os.makedirs(downloads_path, exist_ok=True)
-                os.chmod(downloads_path, 0o777)
+                os.chmod(downloads_path, 0o755)
 
             stream.download(downloads_path)
             print('Video downloaded successfully!')
@@ -27,6 +31,13 @@ class ytDownloader:
         except Exception as e:
             print('Error: Failed to download the video!', e)
             return None
+        
+
+    def is_valid_youtube_url(self, url):
+        yt_regex = (
+            r'(https?://)?(www\.)?(youtube|youtu|youtube-nocookie)\.(com|be)/.*[?&]v=[\w-]+'
+        )
+        return re.match(yt_regex, url) is not None
         
 
 if __name__ == '__main__':
