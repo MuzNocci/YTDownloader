@@ -27,13 +27,18 @@ class ytDownloader:
             stream.download(downloads_path)
             print('Video downloaded successfully!')
             return stream.default_filename
-        
+
         except Exception as e:
             print('Error: Failed to download the video!', e)
             return None
-        
+
 
     def is_valid_youtube_url(self, url):
+
+        if not url:
+            print("Invalid YouTube URL.")
+            return False
+        
         yt_regex = (
             r'(https?://)?(www\.)?(youtube|youtu|youtube-nocookie)\.(com|be)/.*[?&]v=[\w-]+'
         )
